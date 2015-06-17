@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ipsitaprakash.example.com.popmov.DetailActivityFragment">
+
+    <RelativeLayout
+        android:id="@+id/detail_activity_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/indigo"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+        <TextView
+            android:id="@+id/detail_activity_movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom= "true"
+            android:textSize="@dimen/abc_text_size_display_3_material"
+            />
+
+    </RelativeLayout>
+
+    <ImageView
+            android:id="@+id/detail_activity_movie_poster"
+            android:layout_width="@dimen/image_detail_width"
+            android:layout_height="@dimen/image_detail_height"
+            android:layout_below="@id/detail_activity_title_bar"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin_big"/>
+
+    <TextView
+            android:id="@+id/detail_activity_movie_release_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/detail_activity_movie_poster"
+            android:layout_toRightOf="@id/detail_activity_movie_poster"
+            android:textSize="@dimen/abc_text_size_display_1_material"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            />
+
+    <TextView
+            android:id="@+id/detail_activity_movie_vote_average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_activity_movie_release_year"
+            android:layout_toRightOf="@id/detail_activity_movie_poster"
+            android:textSize="@dimen/abc_text_size_headline_material"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin_small"
+            />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/detail_activity_movie_poster"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
+        <TextView
+            android:id="@+id/detail_activity_movie_synopsis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_activity_movie_poster"
+            android:textSize="@dimen/abc_text_size_caption_material"
+
+            />
+    </ScrollView>
+
+
+</RelativeLayout>

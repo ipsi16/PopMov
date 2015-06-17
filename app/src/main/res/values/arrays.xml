@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="settings_sort_criteria_entries">
+        <item>Popularity</item>
+        <item>Ratings</item>
+    </array>
+    <array name="settings_sort_criteria_entry_values">
+        <item>@string/settings_sort_criteria_default_value</item>
+        <item>vote_average</item>
+    </array>
+</resources>

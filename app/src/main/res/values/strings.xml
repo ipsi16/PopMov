@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Pop Mov</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!--Settings -->
+    <string name="settings_sort_criteria_key">sort_criteria</string>
+    <string name="settings_sort_criteria_default_value">popularity</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_detail">Detail Activity</string>
+</resources>
