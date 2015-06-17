@@ -79,7 +79,7 @@ public class DetailActivityFragment extends Fragment
                 TextView releaseYearTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_release_year);
                 releaseYearTextView.setText(movieJsonObject.getString(Movie.RELEASE_DATE).split("-")[0]);
                 TextView voteAverageTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_vote_average);
-                voteAverageTextView.setText(movieJsonObject.getString(Movie.VOTE_AVERAGE));
+                voteAverageTextView.setText(movieJsonObject.getString(Movie.VOTE_AVERAGE)+"/10");
                 TextView synopsisTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_synopsis);
                 synopsisTextView.setText(movieJsonObject.getString(Movie.SYNOPSIS));
 
