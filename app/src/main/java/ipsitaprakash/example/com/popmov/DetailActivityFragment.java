@@ -2,6 +2,7 @@ package ipsitaprakash.example.com.popmov;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +26,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ipsitaprakash.example.com.popmov.model.Movie;
+import ipsitaprakash.example.com.popmov.service.TMDbService;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 /**
@@ -36,6 +43,13 @@ public class DetailActivityFragment extends Fragment
     private String movieId;
     private Movie movie;
     final String imageBaseUrl = "http://image.tmdb.org/t/p/w500";
+    TMDbService tmDbService;
+
+    @Nullable @Bind(R.id.detail_activity_movie_title) TextView titleTextView;
+    @Nullable @Bind(R.id.detail_activity_movie_poster) ImageView moviePoster;
+    @Nullable @Bind(R.id.detail_activity_movie_release_year)TextView releaseYearTextView;
+    @Nullable @Bind(R.id.detail_activity_movie_vote_average)TextView voteAverageTextView;
+    @Nullable @Bind(R.id.detail_activity_movie_synopsis)TextView synopsisTextView;
 
     public DetailActivityFragment() {
     }
@@ -44,112 +58,37 @@ public class DetailActivityFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         movieId = getActivity().getIntent().getStringExtra(PopularMoviesFragment.DETAIL_ACTIVITY_MOVIE_ID);
-
+        tmDbService = ApiClient.getTMDBService();
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        FetchMovieDetailsTask fetchMovieDetailsTask = new FetchMovieDetailsTask();
-        fetchMovieDetailsTask.execute(movieId);
-        return rootView;
-    }
-
-    private class FetchMovieDetailsTask extends AsyncTask<String,Void,JSONObject>
-    {
-        @Override
-        protected void onPostExecute(JSONObject movieJsonObject)
-        {
-            //setting views to their values
-            try
+        ButterKnife.bind(this,rootView);
+        tmDbService.getMovieDetails(movieId, new Callback<Movie>() {
+            @Override
+            public void success(Movie movie, Response response)
             {
-
-                TextView titleTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_title);
-                //shrinking text size in case of long movie titles
-                if(movieJsonObject.getString(Movie.TITLE).length()>=12)
+                if(movie.getTitle().length()>=12)
                 {
                     titleTextView.setTextSize(30);
                 }
-                titleTextView.setText(movieJsonObject.getString(Movie.TITLE));
+                titleTextView.setText(movie.getTitle());
 
-                ImageView moviePoster = (ImageView) getActivity().findViewById(R.id.detail_activity_movie_poster);
-                Picasso.with(getActivity()).load(imageBaseUrl+movieJsonObject.getString(Movie.POSTER_PATH)).into(moviePoster);
-                TextView releaseYearTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_release_year);
-                releaseYearTextView.setText(movieJsonObject.getString(Movie.RELEASE_DATE).split("-")[0]);
-                TextView voteAverageTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_vote_average);
-                voteAverageTextView.setText(movieJsonObject.getString(Movie.VOTE_AVERAGE)+"/10");
-                TextView synopsisTextView = (TextView) getActivity().findViewById(R.id.detail_activity_movie_synopsis);
-                synopsisTextView.setText(movieJsonObject.getString(Movie.SYNOPSIS));
+                Picasso.with(getActivity()).load(imageBaseUrl+movie.getPosterPath()).into(moviePoster);
+                releaseYearTextView.setText(movie.getReleaseDate().split("-")[0]);
+                voteAverageTextView.setText(movie.getVoteAverage()+"/10");
+                synopsisTextView.setText(movie.getSynopsis());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
 
             }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-            super.onPostExecute(movieJsonObject);
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... params)
-        {
-
-            HttpURLConnection urlConnection = null;
-            JSONObject movieJsonObject=null;
-
-            final String BASE_URL = "https://api.themoviedb.org/3/movie/"+params[0];
-            Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(PopularMoviesFragment.API_PARAM,PopularMoviesFragment.api_key).build();
-            try
-            {
-                URL url = new URL(uri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                if(inputStream ==null)
-                    return null;
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer movieDetailsJsonBuffer = new StringBuffer();
-
-                String line;
-                while((line=bufferedReader.readLine())!=null)
-                {
-                    movieDetailsJsonBuffer.append(line+"\n");
-                }
-                if(movieDetailsJsonBuffer.length()==0)
-                    return null;
-                String movieDetailsJsonString = movieDetailsJsonBuffer.toString();
-                Log.v("FETCHTEST",movieDetailsJsonString);
-
-                movieJsonObject = getMovieObjectFromJson(movieDetailsJsonString);
-
-
-            }
-            catch (MalformedURLException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-            return movieJsonObject;
-        }
+        });
+        return rootView;
     }
-
-    public JSONObject getMovieObjectFromJson(String movieDetailJsonString) throws JSONException {
-        if(movieDetailJsonString.length()==0||movieDetailJsonString==null)
-            return null;
-        JSONObject movieJSonObject = new JSONObject(movieDetailJsonString);
-        return movieJSonObject;
-
-    }
-
-
 }
